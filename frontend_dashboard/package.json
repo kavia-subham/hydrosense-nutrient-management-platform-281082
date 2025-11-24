@@ -11,11 +11,25 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --watchAll=false",
+    "test:ci": "cross-env CI=true react-scripts test --watchAll=false --coverage"
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": ["text", "lcov"],
+    "coverageThreshold": {
+      "global": {
+        "statements": 0.6,
+        "branches": 0.55,
+        "functions": 0.6,
+        "lines": 0.6
+      }
+    },
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/src/setupTests.js"]
   },
   "browserslist": {
     "production": [
