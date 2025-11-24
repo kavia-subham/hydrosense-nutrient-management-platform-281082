@@ -15,6 +15,9 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --focus-ring: 0 0 0 3px rgba(139, 92, 246, 0.35);
+
+  --btn-padding: 8px 12px;
+  --btn-radius: 10px;
 }
 
 [data-theme="dark"] {

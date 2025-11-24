@@ -6,6 +6,7 @@ import ThemeProvider from './components/common/ThemeProvider';
 import Sidebar from './components/common/Sidebar';
 import Topbar from './components/common/Topbar';
 import AlertBanner from './components/common/AlertBanner';
+import ToastCenter from './components/common/ToastCenter';
 import StoreProvider from './state/StoreProvider';
 
 import Dashboard from './routes/Dashboard';
@@ -14,6 +15,7 @@ import Crops from './routes/Crops';
 import Alerts from './routes/Alerts';
 import Integrations from './routes/Integrations';
 import Settings from './routes/Settings';
+import Controls from './routes/Controls';
 import { getFeatureFlags } from './utils/featureFlags';
 
 /**
@@ -31,25 +33,28 @@ function App() {
   return (
     <ThemeProvider>
       <StoreProvider>
-        <BrowserRouter>
-          <div className="app-shell">
-            <Sidebar />
-            <main className="main-content">
-              <Topbar />
-              <div className="content-inner">
-                <AlertBanner type={flags?.maintenance ? 'warning' : 'info'} message={bannerMessage} />
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/sensors" element={<Sensors />} />
-                  <Route path="/crops" element={<Crops />} />
-                  <Route path="/alerts" element={<Alerts />} />
-                  <Route path="/integrations" element={<Integrations />} />
-                  <Route path="/settings" element={<Settings />} />
-                </Routes>
-              </div>
-            </main>
-          </div>
-        </BrowserRouter>
+        <ToastCenter>
+          <BrowserRouter>
+            <div className="app-shell">
+              <Sidebar />
+              <main className="main-content">
+                <Topbar />
+                <div className="content-inner">
+                  <AlertBanner type={flags?.maintenance ? 'warning' : 'info'} message={bannerMessage} />
+                  <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/sensors" element={<Sensors />} />
+                    <Route path="/controls" element={<Controls />} />
+                    <Route path="/crops" element={<Crops />} />
+                    <Route path="/alerts" element={<Alerts />} />
+                    <Route path="/integrations" element={<Integrations />} />
+                    <Route path="/settings" element={<Settings />} />
+                  </Routes>
+                </div>
+              </main>
+            </div>
+          </BrowserRouter>
+        </ToastCenter>
       </StoreProvider>
     </ThemeProvider>
   );

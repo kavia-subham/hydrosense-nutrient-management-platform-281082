@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 const navItems = [
   { to: '/', label: 'Dashboard' },
   { to: '/sensors', label: 'Sensors' },
+  { to: '/controls', label: 'Controls' },
   { to: '/crops', label: 'Crops' },
   { to: '/alerts', label: 'Alerts' },
   { to: '/integrations', label: 'Integrations' },
