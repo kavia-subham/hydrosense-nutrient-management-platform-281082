@@ -18,17 +18,28 @@ export function useToasts() {
  * PUBLIC_INTERFACE
  * ToastCenter
  * Displays transient notifications and listens to mock simulator events (alerts, control changes).
+ * Applies a built-in throttle to ensure at most one toast is displayed every 10 seconds.
  */
 export default function ToastCenter({ children }) {
   const [toasts, setToasts] = useState([]);
   const counter = useRef(0);
+  // Track last toast time to throttle UI notifications
+  const lastToastAtRef = useRef(0);
+  const TOAST_MIN_INTERVAL_MS = 10000;
 
   const remove = useCallback((id) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
   const push = useCallback((toast) => {
-    const id = toast.id || `toast-${Date.now()}-${counter.current++}`;
+    // Throttle UI toast display to avoid overwhelming users
+    const now = Date.now();
+    if (now - lastToastAtRef.current < TOAST_MIN_INTERVAL_MS) {
+      return;
+    }
+    lastToastAtRef.current = now;
+
+    const id = toast.id || `toast-${now}-${counter.current++}`;
     const t = { id, type: 'info', timeoutMs: 4000, ...toast };
     setToasts((prev) => [...prev, t]);
     const prefersReduced =

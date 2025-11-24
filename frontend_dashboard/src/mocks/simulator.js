@@ -2,9 +2,10 @@
 //
 // PUBLIC_INTERFACE
 // simulator.js
-// Simulates realtime updates for sensors with bounded drift and random alerts.
-// Publishes events through the wsMock bus and writes to the in-memory store.
-// Now supports additional sensors (DO, ORP) and crop-stage-specific thresholds.
+ // Simulates realtime updates for sensors with bounded drift and random alerts.
+ // Publishes events through the wsMock bus and writes to the in-memory store.
+ // Now supports additional sensors (DO, ORP) and crop-stage-specific thresholds.
+ // Notification dispatch is throttled to a minimum interval to avoid spamming users.
 //
 import { bus, WS_TOPICS } from './wsMock';
 import {
@@ -17,6 +18,9 @@ import {
 import { DEFAULT_THRESHOLDS, alertTemplates, SENSOR_TYPES } from './dataSeed';
 
 let intervalId = null;
+// Track last time an alert was published to enforce a minimum interval between notifications
+let lastAlertPublishedAt = 0;
+const ALERT_MIN_INTERVAL_MS = 10000;
 
 function clamp(val, min, max) {
   return Math.max(min, Math.min(max, val));
@@ -59,13 +63,23 @@ function maybeCreateAlert(sensor, thresholds) {
   const { value } = sensor;
   const outOfRange = value < t.min || value > t.max;
 
+  // Helper to publish an alert respecting throttle
+  const publishThrottled = (alertObj) => {
+    const now = Date.now();
+    if (now - lastAlertPublishedAt < ALERT_MIN_INTERVAL_MS) {
+      return; // Throttled: skip this alert
+    }
+    lastAlertPublishedAt = now;
+    pushAlert(alertObj);
+    bus.publish(WS_TOPICS.ALERT_NEW, alertObj);
+  };
+
   if (!outOfRange) {
     // Occasionally create an info alert about drift for PH and ORP
     if ((sensor.type === SENSOR_TYPES.PH || sensor.type === SENSOR_TYPES.ORP) && Math.random() < 0.06) {
       const alertObj =
         sensor.type === SENSOR_TYPES.PH ? alertTemplates.PH_DRIFT(value, t) : alertTemplates.ORP_OUT_OF_RANGE(value, t);
-      pushAlert(alertObj);
-      bus.publish(WS_TOPICS.ALERT_NEW, alertObj);
+      publishThrottled(alertObj);
     }
     return;
   }
@@ -85,8 +99,7 @@ function maybeCreateAlert(sensor, thresholds) {
       alertObj = alertTemplates.PH_DRIFT(value, t);
     }
     if (alertObj) {
-      pushAlert(alertObj);
-      bus.publish(WS_TOPICS.ALERT_NEW, alertObj);
+      publishThrottled(alertObj);
     }
   }
 }
