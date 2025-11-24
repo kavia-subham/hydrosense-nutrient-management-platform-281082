@@ -11,10 +11,12 @@ export default function Dashboard() {
   const { alerts } = useAlerts();
   const { controls } = useControls();
 
-  // Choose representative sensors
+  // Choose representative sensors; auto-include DO/ORP if present
   const ec = useMemo(() => sensors.find((s) => s.type === 'EC'), [sensors]);
   const ph = useMemo(() => sensors.find((s) => s.type === 'PH'), [sensors]);
   const temp = useMemo(() => sensors.find((s) => s.type === 'TEMP'), [sensors]);
+  const doSensor = useMemo(() => sensors.find((s) => s.type === 'DO'), [sensors]);
+  const orp = useMemo(() => sensors.find((s) => s.type === 'ORP'), [sensors]);
 
   const kpis = useMemo(
     () =>
@@ -22,8 +24,10 @@ export default function Dashboard() {
         ec && { key: 'EC', name: ec.name, value: ec.value, unit: ec.unit, history: ec.history, type: ec.type },
         ph && { key: 'PH', name: ph.name, value: ph.value, unit: ph.unit, history: ph.history, type: ph.type },
         temp && { key: 'TEMP', name: temp.name, value: temp.value, unit: temp.unit, history: temp.history, type: temp.type },
+        doSensor && { key: 'DO', name: doSensor.name, value: doSensor.value, unit: doSensor.unit, history: doSensor.history, type: doSensor.type },
+        orp && { key: 'ORP', name: orp.name, value: orp.value, unit: orp.unit, history: orp.history, type: orp.type },
       ].filter(Boolean),
-    [ec, ph, temp]
+    [ec, ph, temp, doSensor, orp]
   );
 
   return (
@@ -41,7 +45,7 @@ export default function Dashboard() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
               <div>
                 <div aria-label={`${k.key} value`} style={{ fontSize: 22, fontWeight: 800, color: 'var(--color-primary)' }}>
-                  {k.value.toFixed(k.type === 'TEMP' ? 1 : 2)} {k.unit}
+                  {k.value.toFixed(k.type === 'TEMP' ? 1 : k.type === 'ORP' ? 0 : 2)} {k.unit}
                 </div>
                 <div style={{ marginTop: 6 }}>
                   <DriftIndicator history={k.history} sensorType={k.type} unit={k.unit} />

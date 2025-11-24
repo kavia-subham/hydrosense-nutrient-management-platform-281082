@@ -1,16 +1,20 @@
 //
+//
 // PUBLIC_INTERFACE
 // store.js
 // In-memory store that holds mock app state. Provides get/set/update APIs and a
 // subscription mechanism for lightweight state change notifications.
+// Now supports per-sensor metadata (zone/greenhouse/crop/stage), filtering,
+// and basic crop CRUD while keeping backward compatibility.
 //
-
 import {
   initialSensors,
-  initialCrops,
+  initialCropsWithTargets as initialCrops,
   initialControls,
   initialIntegrations,
   initialAlerts,
+  initialZones,
+  initialSites,
 } from './dataSeed';
 
 const HISTORY_LIMIT = 120; // small ring buffer per sensor
@@ -18,6 +22,8 @@ const HISTORY_LIMIT = 120; // small ring buffer per sensor
 const state = {
   sensors: initialSensors.map((s) => ({ ...s, history: [...(s.history || [])] })),
   crops: [...initialCrops],
+  zones: [...(initialZones || [])],
+  greenhouses: [...(initialSites || [])],
   controls: { ...initialControls },
   integrations: [...initialIntegrations],
   alerts: [...initialAlerts],
@@ -31,6 +37,8 @@ function notify() {
     ...state,
     sensors: state.sensors.map((s) => ({ ...s, history: [...s.history] })),
     crops: [...state.crops],
+    zones: [...state.zones],
+    greenhouses: [...state.greenhouses],
     controls: { ...state.controls },
     integrations: [...state.integrations],
     alerts: [...state.alerts],
@@ -54,6 +62,8 @@ export function getState() {
     ...state,
     sensors: state.sensors.map((s) => ({ ...s, history: [...s.history] })),
     crops: [...state.crops],
+    zones: [...state.zones],
+    greenhouses: [...state.greenhouses],
     controls: { ...state.controls },
     integrations: [...state.integrations],
     alerts: [...state.alerts],
@@ -83,9 +93,26 @@ export function updateSensorValue(sensorId, value) {
   const updatedAt = Date.now();
   sensor.value = value;
   sensor.updatedAt = updatedAt;
+  // Maintain ring buffer history
   sensor.history.push({ t: updatedAt, v: value });
   if (sensor.history.length > HISTORY_LIMIT) {
     sensor.history.splice(0, sensor.history.length - HISTORY_LIMIT);
+  }
+  notify();
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * upsertSensor
+ * Creates or updates a sensor with metadata support.
+ */
+export function upsertSensor(sensor) {
+  if (!sensor || !sensor.id) return;
+  const idx = state.sensors.findIndex((s) => s.id === sensor.id);
+  if (idx === -1) {
+    state.sensors.push({ history: [], updatedAt: Date.now(), ...sensor });
+  } else {
+    state.sensors[idx] = { ...state.sensors[idx], ...sensor };
   }
   notify();
 }
@@ -126,9 +153,19 @@ export function acknowledgeAlert(alertId) {
  * PUBLIC_INTERFACE
  * getSensors
  * Returns a copy of sensors state.
+ * Optional filter: { zoneId, greenhouseId, cropId, stage, type }
  */
-export function getSensors() {
-  return getState().sensors;
+export function getSensors(filter = null) {
+  const sensors = getState().sensors;
+  if (!filter || typeof filter !== 'object') return sensors;
+  return sensors.filter((s) => {
+    if (filter.zoneId && s.zoneId !== filter.zoneId) return false;
+    if (filter.greenhouseId && s.greenhouseId !== filter.greenhouseId) return false;
+    if (filter.cropId && s.cropId !== filter.cropId) return false;
+    if (filter.stage && s.stage !== filter.stage) return false;
+    if (filter.type && s.type !== filter.type) return false;
+    return true;
+  });
 }
 
 /**
@@ -166,4 +203,29 @@ export function setControl(key, value) {
  */
 export function getIntegrations() {
   return [...state.integrations];
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * getCrops
+ * Returns list of crops.
+ */
+export function getCrops() {
+  return [...state.crops];
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * upsertCrop
+ * Create or update a crop profile.
+ */
+export function upsertCrop(crop) {
+  if (!crop || !crop.id) return;
+  const idx = state.crops.findIndex((c) => c.id === crop.id);
+  if (idx === -1) {
+    state.crops.push({ ...crop });
+  } else {
+    state.crops[idx] = { ...state.crops[idx], ...crop };
+  }
+  notify();
 }

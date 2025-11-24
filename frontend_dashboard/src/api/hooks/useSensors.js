@@ -8,10 +8,11 @@ import { getEnv } from '../../config/env';
  * useSensors
  * Returns live sensors, loading and error. Subscribes to mock bus to re-render
  * on updates. Cleanly replaceable with real API/WebSocket later.
+ * Optionally accepts a filter: { zoneId, greenhouseId, cropId, stage, type }
  */
-export function useSensors() {
+export function useSensors(filter = null) {
   const { USE_MOCKS } = getEnv();
-  const [sensors, setSensors] = useState(() => (USE_MOCKS ? getSensors() : []));
+  const [sensors, setSensors] = useState(() => (USE_MOCKS ? getSensors(filter) : []));
   const [loading, setLoading] = useState(!USE_MOCKS);
   const [error, setError] = useState(null);
   const mounted = useRef(true);
@@ -26,7 +27,7 @@ export function useSensors() {
       };
     }
 
-    setSensors(getSensors());
+    setSensors(getSensors(filter));
     setLoading(false);
 
     // Throttle frequent updates to animation frame for smoother UI
@@ -36,7 +37,7 @@ export function useSensors() {
       if (rafId) return; // already queued
       rafId = requestAnimationFrame(() => {
         rafId = null;
-        setSensors(getSensors());
+        setSensors(getSensors(filter));
       });
     };
     const unsub = bus.subscribe(WS_TOPICS.SENSOR_UPDATES, onUpdate);
@@ -45,19 +46,19 @@ export function useSensors() {
       mounted.current = false;
       if (unsub) unsub();
     };
-  }, [USE_MOCKS]);
+  }, [USE_MOCKS, filter?.zoneId, filter?.greenhouseId, filter?.cropId, filter?.stage, filter?.type]);
 
   const api = useMemo(
     () => ({
       refresh: () => {
         try {
-          setSensors(getSensors());
+          setSensors(getSensors(filter));
         } catch (e) {
           setError(e);
         }
       },
     }),
-    []
+    [filter]
   );
 
   return { sensors, loading, error, ...api };
