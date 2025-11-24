@@ -31,8 +31,13 @@ export default function ToastCenter({ children }) {
     const id = toast.id || `toast-${Date.now()}-${counter.current++}`;
     const t = { id, type: 'info', timeoutMs: 4000, ...toast };
     setToasts((prev) => [...prev, t]);
-    if (t.timeoutMs > 0) {
-      window.setTimeout(() => remove(id), t.timeoutMs);
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const timeout = prefersReduced ? Math.min(4000, t.timeoutMs) : t.timeoutMs;
+    if (timeout > 0) {
+      window.setTimeout(() => remove(id), timeout);
     }
   }, [remove]);
 
@@ -67,6 +72,7 @@ export default function ToastCenter({ children }) {
       <div
         role="region"
         aria-live="polite"
+        aria-atomic="true"
         aria-label="Notifications"
         style={{
           position: 'fixed',
@@ -81,7 +87,9 @@ export default function ToastCenter({ children }) {
         {toasts.map((t) => (
           <div
             key={t.id}
-            role="status"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
             style={{
               background: 'var(--color-surface)',
               borderRadius: 12,

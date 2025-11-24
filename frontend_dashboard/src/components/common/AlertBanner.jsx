@@ -17,10 +17,10 @@ export default function AlertBanner({ message, type = 'info' }) {
   };
 
   const borderByType = {
-    info: '1px solid rgba(139, 92, 246, 0.25)',
-    success: '1px solid rgba(16, 185, 129, 0.25)',
-    error: '1px solid rgba(239, 68, 68, 0.25)',
-    warning: '1px solid rgba(245, 158, 11, 0.25)',
+    info: '1px solid rgba(124, 58, 237, 0.35)',
+    success: '1px solid rgba(5, 150, 105, 0.35)',
+    error: '1px solid rgba(220, 38, 38, 0.35)',
+    warning: '1px solid rgba(245, 158, 11, 0.40)',
   };
 
   return (

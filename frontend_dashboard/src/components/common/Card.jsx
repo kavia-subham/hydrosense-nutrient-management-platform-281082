@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 /**
  * PUBLIC_INTERFACE
  * Card
  * A simple surface container with elegant styling.
  */
-export default function Card({ title, children, footer, style, ...rest }) {
+function CardBase({ title, children, footer, style, ...rest }) {
   return (
     <section
       {...rest}
+      role="region"
+      aria-label={typeof title === 'string' ? title : undefined}
       style={{
         background: 'var(--color-surface)',
         borderRadius: 'var(--radius-lg)',
         boxShadow: 'var(--shadow-soft)',
-        border: '1px solid rgba(0,0,0,0.04)',
+        border: '1px solid rgba(0,0,0,0.06)',
         padding: 16,
         ...style,
       }}
@@ -48,3 +50,7 @@ export default function Card({ title, children, footer, style, ...rest }) {
     </section>
   );
 }
+
+const Card = memo(CardBase);
+
+export default Card;

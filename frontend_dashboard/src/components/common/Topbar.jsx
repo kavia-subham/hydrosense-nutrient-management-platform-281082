@@ -59,6 +59,8 @@ export default function Topbar() {
             cursor: 'pointer',
             boxShadow: 'var(--shadow-soft)',
           }}
+          onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+          onBlur={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-soft)')}
         >
           {theme === 'light' ? 'Dark' : 'Light'}
         </button>

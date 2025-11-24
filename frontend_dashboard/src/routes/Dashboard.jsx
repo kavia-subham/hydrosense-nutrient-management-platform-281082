@@ -16,11 +16,15 @@ export default function Dashboard() {
   const ph = useMemo(() => sensors.find((s) => s.type === 'PH'), [sensors]);
   const temp = useMemo(() => sensors.find((s) => s.type === 'TEMP'), [sensors]);
 
-  const kpis = [
-    ec && { key: 'EC', name: ec.name, value: ec.value, unit: ec.unit, history: ec.history, type: ec.type },
-    ph && { key: 'PH', name: ph.name, value: ph.value, unit: ph.unit, history: ph.history, type: ph.type },
-    temp && { key: 'TEMP', name: temp.name, value: temp.value, unit: temp.unit, history: temp.history, type: temp.type },
-  ].filter(Boolean);
+  const kpis = useMemo(
+    () =>
+      [
+        ec && { key: 'EC', name: ec.name, value: ec.value, unit: ec.unit, history: ec.history, type: ec.type },
+        ph && { key: 'PH', name: ph.name, value: ph.value, unit: ph.unit, history: ph.history, type: ph.type },
+        temp && { key: 'TEMP', name: temp.name, value: temp.value, unit: temp.unit, history: temp.history, type: temp.type },
+      ].filter(Boolean),
+    [ec, ph, temp]
+  );
 
   return (
     <div>

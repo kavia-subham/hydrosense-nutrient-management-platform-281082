@@ -47,6 +47,8 @@ export default function Controls() {
                 onChange={(e) => set('dosingPump', { status: e.target.value })}
                 aria-label="Dosing pump status"
                 style={{ padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)' }}
+                onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <option value="idle">idle</option>
                 <option value="running">running</option>
@@ -61,6 +63,8 @@ export default function Controls() {
                 onChange={(e) => set('circulation', { status: e.target.value })}
                 aria-label="Circulation status"
                 style={{ padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)' }}
+                onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <option value="running">running</option>
                 <option value="stopped">stopped</option>
@@ -74,6 +78,8 @@ export default function Controls() {
                 onChange={(e) => set('simulator', { paused: e.target.value === 'paused' })}
                 aria-label="Simulator state"
                 style={{ padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)' }}
+                onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <option value="active">active</option>
                 <option value="paused">paused</option>
@@ -93,6 +99,8 @@ export default function Controls() {
                 value={doseMl}
                 onChange={(e) => setDoseMl(Number(e.target.value))}
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)' }}
+                onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
               />
             </label>
             <label>
@@ -104,6 +112,8 @@ export default function Controls() {
                 value={acidMl}
                 onChange={(e) => setAcidMl(Number(e.target.value))}
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)' }}
+                onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
               />
             </label>
             <button

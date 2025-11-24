@@ -30,7 +30,7 @@ export default function Sidebar() {
   }, []);
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Escape' && collapsed) {
+    if (e.key === 'Escape' && !collapsed) {
       setCollapsed(true);
     }
   };
@@ -93,15 +93,16 @@ export default function Sidebar() {
                 textDecoration: 'none',
                 color: 'var(--color-text)',
                 background: isActive
-                  ? 'rgba(139, 92, 246, 0.12)'
-                  : 'rgba(255, 255, 255, 0.7)',
+                  ? 'rgba(124, 58, 237, 0.14)'
+                  : 'rgba(255, 255, 255, 0.85)',
                 border: isActive
-                  ? '1px solid rgba(139, 92, 246, 0.35)'
+                  ? '1px solid rgba(124, 58, 237, 0.40)'
                   : '1px solid rgba(0,0,0,0.06)',
                 padding: '10px 12px',
                 borderRadius: 10,
                 outline: 'none',
               })}
+              aria-current={({ isActive }) => undefined}
               onFocus={(e) => {
                 e.currentTarget.style.boxShadow = 'var(--focus-ring)';
               }}

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 
 /**
  * PUBLIC_INTERFACE
@@ -9,7 +9,7 @@ import React, { useMemo } from 'react';
  * - stroke: color for line
  * - fill: optional fill under the curve (transparent if omitted)
  */
-export default function Sparkline({
+function SparklineBase({
   values,
   width = 180,
   height = 48,
@@ -63,3 +63,5 @@ export default function Sparkline({
     </svg>
   );
 }
+
+export default memo(SparklineBase);

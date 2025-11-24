@@ -27,12 +27,14 @@ export default function Sensors() {
                     display: 'grid',
                     gridTemplateColumns: '1fr auto',
                     padding: '10px 12px',
-                    border: '1px solid rgba(0,0,0,0.06)',
+                    border: '1px solid rgba(0,0,0,0.08)',
                     borderRadius: 10,
                     background: 'var(--color-surface)',
                     cursor: 'pointer',
                     textAlign: 'left',
                   }}
+                  onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                  onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
                 >
                   <div>
                     <div style={{ fontWeight: 600 }}>{s.name}</div>

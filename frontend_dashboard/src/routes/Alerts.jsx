@@ -51,18 +51,20 @@ export default function Alerts() {
             {filtered.map((a) => (
               <div
                 key={a.id}
+                role="article"
+                aria-label={`${a.severity} alert: ${a.title}`}
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr auto',
                   padding: '10px 12px',
-                  border: '1px solid rgba(0,0,0,0.06)',
+                  border: '1px solid rgba(0,0,0,0.08)',
                   borderRadius: 10,
                   background:
                     a.severity === 'error'
-                      ? 'rgba(239, 68, 68, 0.06)'
+                      ? 'rgba(220, 38, 38, 0.08)'
                       : a.severity === 'warning'
-                      ? 'rgba(245, 158, 11, 0.08)'
-                      : 'rgba(139, 92, 246, 0.06)',
+                      ? 'rgba(245, 158, 11, 0.10)'
+                      : 'rgba(124, 58, 237, 0.08)',
                 }}
               >
                 <div>

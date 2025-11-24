@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 
@@ -8,15 +8,16 @@ import Topbar from './components/common/Topbar';
 import AlertBanner from './components/common/AlertBanner';
 import ToastCenter from './components/common/ToastCenter';
 import StoreProvider from './state/StoreProvider';
-
-import Dashboard from './routes/Dashboard';
-import Sensors from './routes/Sensors';
-import Crops from './routes/Crops';
-import Alerts from './routes/Alerts';
-import Integrations from './routes/Integrations';
-import Settings from './routes/Settings';
-import Controls from './routes/Controls';
 import { getFeatureFlags } from './utils/featureFlags';
+
+// Route-level code splitting to reduce initial bundle
+const Dashboard = lazy(() => import('./routes/Dashboard'));
+const Sensors = lazy(() => import('./routes/Sensors'));
+const Crops = lazy(() => import('./routes/Crops'));
+const Alerts = lazy(() => import('./routes/Alerts'));
+const Integrations = lazy(() => import('./routes/Integrations'));
+const Settings = lazy(() => import('./routes/Settings'));
+const Controls = lazy(() => import('./routes/Controls'));
 
 /**
  * PUBLIC_INTERFACE
@@ -37,19 +38,21 @@ function App() {
           <BrowserRouter>
             <div className="app-shell">
               <Sidebar />
-              <main className="main-content">
+              <main className="main-content" role="main" aria-live="polite">
                 <Topbar />
                 <div className="content-inner">
                   <AlertBanner type={flags?.maintenance ? 'warning' : 'info'} message={bannerMessage} />
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/sensors" element={<Sensors />} />
-                    <Route path="/controls" element={<Controls />} />
-                    <Route path="/crops" element={<Crops />} />
-                    <Route path="/alerts" element={<Alerts />} />
-                    <Route path="/integrations" element={<Integrations />} />
-                    <Route path="/settings" element={<Settings />} />
-                  </Routes>
+                  <Suspense fallback={<div aria-busy="true">Loading…</div>}>
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/sensors" element={<Sensors />} />
+                      <Route path="/controls" element={<Controls />} />
+                      <Route path="/crops" element={<Crops />} />
+                      <Route path="/alerts" element={<Alerts />} />
+                      <Route path="/integrations" element={<Integrations />} />
+                      <Route path="/settings" element={<Settings />} />
+                    </Routes>
+                  </Suspense>
                 </div>
               </main>
             </div>

@@ -27,10 +27,16 @@ export function useControls() {
     setControlsState(getControls());
     setLoading(false);
 
-    const unsub = bus.subscribe(WS_TOPICS.CONTROLS_STATUS, () => {
+    let rafId = null;
+    const onUpdate = () => {
       if (!mounted.current) return;
-      setControlsState(getControls());
-    });
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        setControlsState(getControls());
+      });
+    };
+    const unsub = bus.subscribe(WS_TOPICS.CONTROLS_STATUS, onUpdate);
 
     return () => {
       mounted.current = false;

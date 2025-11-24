@@ -1,20 +1,28 @@
 :root {
-  /* Royal Purple theme variables */
-  --color-primary: #8B5CF6;
-  --color-secondary: #6B7280;
-  --color-success: #10B981;
-  --color-error: #EF4444;
-  --color-bg: #F3E8FF;
+  /* Royal Purple theme variables with improved contrast */
+  --color-primary: #7C3AED; /* slightly deeper for contrast */
+  --color-secondary: #4B5563; /* deepen secondary text */
+  --color-success: #059669;
+  --color-error: #DC2626;
+  --color-bg: #F5EEFF; /* softer light with clarity */
   --color-surface: #FFFFFF;
-  --color-text: #374151;
+  --color-text: #1F2937; /* darker text for contrast */
 
   --gradient-start: #E9D5FF; /* purple-100 */
-  --gradient-end: #D8B4FE;   /* purple-300 */
+  --gradient-end: #C4B5FD;   /* purple-300 slightly darker */
 
-  --shadow-soft: 0 4px 16px rgba(139, 92, 246, 0.15);
+  --shadow-soft: 0 6px 20px rgba(124, 58, 237, 0.18);
+  --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --focus-ring: 0 0 0 3px rgba(139, 92, 246, 0.35);
+  --focus-ring: 0 0 0 3px rgba(124, 58, 237, 0.45);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
 
   --btn-padding: 8px 12px;
   --btn-radius: 10px;
@@ -42,9 +50,9 @@
 }
 
 .main-content {
-  padding: 16px;
+  padding: var(--space-4);
   background:
-    radial-gradient(1200px 400px at 0% 0%, rgba(139, 92, 246, 0.08), transparent 60%),
+    radial-gradient(1200px 400px at 0% 0%, rgba(124, 58, 237, 0.08), transparent 60%),
     linear-gradient(180deg, #fff, var(--color-bg));
   min-height: 100vh;
   box-sizing: border-box;
@@ -53,12 +61,17 @@
 .content-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px 8px 48px;
+  padding: var(--space-4) var(--space-2) calc(var(--space-6) * 2);
 }
 
 /* a11y helpers */
 :focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
+}
+
+/* landmark helpers */
+.main-content[role="main"] {
+  outline: none;
 }

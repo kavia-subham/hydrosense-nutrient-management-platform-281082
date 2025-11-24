@@ -27,10 +27,16 @@ export function useAlerts() {
     setAlerts(getAlerts());
     setLoading(false);
 
-    const unsub = bus.subscribe(WS_TOPICS.ALERT_NEW, () => {
+    let tId = null;
+    const onNew = () => {
       if (!mounted.current) return;
-      setAlerts(getAlerts());
-    });
+      if (tId) clearTimeout(tId);
+      tId = setTimeout(() => {
+        setAlerts(getAlerts());
+        tId = null;
+      }, 100); // small debounce window
+    };
+    const unsub = bus.subscribe(WS_TOPICS.ALERT_NEW, onNew);
 
     return () => {
       mounted.current = false;

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import Card from '../common/Card';
 
 /**
@@ -7,7 +7,7 @@ import Card from '../common/Card';
  * Shows derived sensor health metrics: freshness, stability, and drift.
  * - sensor: { name, updatedAt, history: [{t,v}], type }
  */
-export default function SensorHealthCard({ sensor }) {
+function SensorHealthCard({ sensor }) {
   const { freshnessSec, stability, driftPerMin } = useMemo(() => {
     if (!sensor) return { freshnessSec: Infinity, stability: 'unknown', driftPerMin: 0 };
     const now = Date.now();
@@ -77,3 +77,5 @@ export default function SensorHealthCard({ sensor }) {
     </Card>
   );
 }
+
+export default memo(SensorHealthCard);

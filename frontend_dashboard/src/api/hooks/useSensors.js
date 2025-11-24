@@ -29,11 +29,17 @@ export function useSensors() {
     setSensors(getSensors());
     setLoading(false);
 
-    const unsub = bus.subscribe(WS_TOPICS.SENSOR_UPDATES, () => {
-      // Batch updates by reading the full set only when events arrive
+    // Throttle frequent updates to animation frame for smoother UI
+    let rafId = null;
+    const onUpdate = () => {
       if (!mounted.current) return;
-      setSensors(getSensors());
-    });
+      if (rafId) return; // already queued
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        setSensors(getSensors());
+      });
+    };
+    const unsub = bus.subscribe(WS_TOPICS.SENSOR_UPDATES, onUpdate);
 
     return () => {
       mounted.current = false;

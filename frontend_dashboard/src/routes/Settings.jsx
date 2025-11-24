@@ -56,6 +56,8 @@ export default function Settings() {
                 onChange={(e) => setUnits(e.target.value)}
                 aria-label="Units"
                 style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)' }}
+                onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <option value="metric">Metric</option>
                 <option value="imperial">Imperial</option>

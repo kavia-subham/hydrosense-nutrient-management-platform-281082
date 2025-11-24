@@ -75,6 +75,8 @@ export default function Integrations() {
                       cursor: 'pointer',
                     }}
                     aria-label={`Toggle status for ${i.name}`}
+                    onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                    onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
                   >
                     {i.status}
                   </button>
@@ -89,6 +91,8 @@ export default function Integrations() {
                       color: 'var(--color-secondary)',
                     }}
                     aria-label={`Remove ${i.name}`}
+                    onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                    onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
                   >
                     Remove
                   </button>
@@ -106,6 +110,8 @@ export default function Integrations() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g., Slack"
                 style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)' }}
+                onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
               />
             </label>
             <label>
@@ -114,6 +120,8 @@ export default function Integrations() {
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
                 style={{ padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)' }}
+                onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--focus-ring)')}
+                onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}
               >
                 <option value="connected">connected</option>
                 <option value="disconnected">disconnected</option>
